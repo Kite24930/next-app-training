@@ -7,7 +7,7 @@ export default function Home() {
         {
             icon: '🗂️',
             title: 'App Router',
-            description: 'ファイルベースルーティング、レイアウト、Server Componentsなど、Next.js 14+の最新アーキテクチャを学習',
+            description: 'ファイルベースルーティング、レイアウト、Server Componentsなど、Next.js App Routerの最新アーキテクチャを学習',
         },
         {
             icon: '🎮',

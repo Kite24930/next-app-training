@@ -3,7 +3,7 @@ import MainLayout from '@/Layouts/MainLayout';
 
 export default function About() {
     const techStack = [
-        { category: '学習対象', items: ['Next.js 14+ (App Router)', 'React 18+', 'TypeScript', 'Tailwind CSS', 'HTML Canvas API'] },
+        { category: '学習対象', items: ['Next.js 15 (App Router)', 'React 19', 'TypeScript', 'Tailwind CSS', 'HTML Canvas API'] },
         { category: 'サイト構築', items: ['Laravel 12', 'Inertia.js', 'React', 'TypeScript', 'Tailwind CSS', 'Vite'] },
         { category: '対象読者のスキル', items: ['Laravel (MVC, Eloquent, Blade)', 'React (Hooks, Components, JSX)', 'PHP / JavaScript', 'HTML / CSS'] },
     ];

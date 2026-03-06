@@ -74,7 +74,7 @@ class PageController extends Controller
                     [
                         'type' => 'text',
                         'title' => 'はじめに',
-                        'content' => '<p>このチャプターでは、Next.jsプロジェクトの作成と環境構築を行います。普段Laravelで <code>composer create-project</code> を使うように、Next.jsでは <code>create-next-app</code> を使います。</p><p>Laravelでは PHP + Composer がベースですが、Next.jsでは Node.js + npm（またはyarn/pnpm）がベースになります。Reactの開発経験があれば、Node.jsの環境は既に整っているはずです。</p>',
+                        'content' => '<p>このチャプターでは、Next.jsプロジェクトの作成と環境構築を行います。普段Laravelで <code>composer create-project</code> を使うように、Next.jsでは <code>create-next-app</code> を使います。</p><p>Laravelでは PHP + Composer がベースですが、Next.jsでは Node.js + npm（またはyarn/pnpm）がベースになります。Reactの開発経験があれば、Node.jsの環境は既に整っているはずです。</p><p>本教材では <strong>Next.js 15</strong>（App Router）を対象としています。</p>',
                     ],
                     [
                         'type' => 'comparison',
@@ -115,7 +115,7 @@ class PageController extends Controller
                         'type' => 'code',
                         'title' => 'package.json の確認',
                         'description' => 'Laravelの composer.json に相当する package.json を見てみましょう。',
-                        'code' => "{\n  \"name\": \"space-invaders\",\n  \"version\": \"0.1.0\",\n  \"scripts\": {\n    \"dev\": \"next dev\",        // php artisan serve に相当\n    \"build\": \"next build\",    // 本番ビルド\n    \"start\": \"next start\",    // 本番サーバー起動\n    \"lint\": \"next lint\"       // ESLint 実行\n  },\n  \"dependencies\": {\n    \"next\": \"14.x\",\n    \"react\": \"^18\",\n    \"react-dom\": \"^18\"\n  },\n  \"devDependencies\": {\n    \"@types/react\": \"^18\",\n    \"typescript\": \"^5\",\n    \"tailwindcss\": \"^3\"\n  }\n}",
+                        'code' => "{\n  \"name\": \"space-invaders\",\n  \"version\": \"0.1.0\",\n  \"scripts\": {\n    \"dev\": \"next dev\",        // php artisan serve に相当\n    \"build\": \"next build\",    // 本番ビルド\n    \"start\": \"next start\",    // 本番サーバー起動\n    \"lint\": \"next lint\"       // ESLint 実行\n  },\n  \"dependencies\": {\n    \"next\": \"15.x\",\n    \"react\": \"^19\",\n    \"react-dom\": \"^19\"\n  },\n  \"devDependencies\": {\n    \"@types/react\": \"^19\",\n    \"typescript\": \"^5\",\n    \"tailwindcss\": \"^4\"\n  }\n}",
                         'language' => 'json',
                         'filename' => 'package.json',
                         'highlights' => [4, 5, 6, 7],
@@ -138,7 +138,7 @@ class PageController extends Controller
             2 => [
                 'number' => 2,
                 'title' => 'App Router とファイルベースルーティング',
-                'description' => 'Next.js 14+のApp Routerによるファイルベースルーティングを学びます。Laravelのweb.phpとの違いを理解しましょう。',
+                'description' => 'Next.jsのApp Routerによるファイルベースルーティングを学びます。Laravelのweb.phpとの違いを理解しましょう。',
                 'objectives' => [
                     'ファイルベースルーティングの仕組みを理解する',
                     'page.tsx、layout.tsx の役割を把握する',
@@ -170,10 +170,10 @@ class PageController extends Controller
                         'type' => 'code',
                         'title' => '動的ルーティング',
                         'description' => 'Laravelの {id} パラメータに相当する動的ルートは、[id] というフォルダ名で実現します。',
-                        'code' => "// src/app/game/[id]/page.tsx\n// LaravelでいうRoute::get('/game/{id}', ...) に相当\n\ninterface Props {\n  params: { id: string };\n}\n\nexport default function GameDetailPage({ params }: Props) {\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-3xl font-bold\">\n        Game #{params.id}\n      </h1>\n      <p className=\"mt-4\">\n        ゲームID: {params.id} の詳細ページ\n      </p>\n    </div>\n  );\n}\n\n// /game/1, /game/2, /game/abc などでアクセス可能",
+                        'code' => "// src/app/game/[id]/page.tsx\n// LaravelでいうRoute::get('/game/{id}', ...) に相当\n\n// Next.js 15 では params は Promise になった\ninterface Props {\n  params: Promise<{ id: string }>;\n}\n\nexport default async function GameDetailPage({ params }: Props) {\n  const { id } = await params;\n\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-3xl font-bold\">\n        Game #{id}\n      </h1>\n      <p className=\"mt-4\">\n        ゲームID: {id} の詳細ページ\n      </p>\n    </div>\n  );\n}\n\n// /game/1, /game/2, /game/abc などでアクセス可能",
                         'language' => 'tsx',
                         'filename' => 'src/app/game/[id]/page.tsx',
-                        'highlights' => [1, 5, 8, 12],
+                        'highlights' => [1, 5, 6, 9, 10],
                     ],
                     [
                         'type' => 'tip',
@@ -227,7 +227,7 @@ class PageController extends Controller
                     [
                         'type' => 'text',
                         'title' => 'Server Components vs Client Components',
-                        'content' => '<p>Next.js 14+ では、コンポーネントはデフォルトで <strong>Server Component</strong> です。サーバー上でHTMLにレンダリングされ、JavaScriptバンドルに含まれません。</p><p>ブラウザのAPIやReactのState/Effectを使いたい場合は、ファイルの先頭に <code>"use client"</code> を付けて <strong>Client Component</strong> にします。</p><p>LaravelでいうBladeテンプレート（サーバーサイド）と、Inertia/Reactコンポーネント（クライアントサイド）の使い分けに似ています。</p>',
+                        'content' => '<p>Next.js の App Router では、コンポーネントはデフォルトで <strong>Server Component</strong> です。サーバー上でHTMLにレンダリングされ、JavaScriptバンドルに含まれません。</p><p>ブラウザのAPIやReactのState/Effectを使いたい場合は、ファイルの先頭に <code>"use client"</code> を付けて <strong>Client Component</strong> にします。</p><p>LaravelでいうBladeテンプレート（サーバーサイド）と、Inertia/Reactコンポーネント（クライアントサイド）の使い分けに似ています。</p>',
                     ],
                     [
                         'type' => 'code',
@@ -342,7 +342,7 @@ class PageController extends Controller
                         'type' => 'code',
                         'title' => 'ゲームループの実装',
                         'description' => 'useRefでゲーム状態を管理し、requestAnimationFrameでループを回すパターン。',
-                        'code' => "\"use client\";\nimport { useRef, useEffect, useCallback } from 'react';\nimport { createInitialState, updateGameState } from '@/game/engine';\nimport { render } from '@/game/renderer';\nimport type { GameState } from '@/game/types';\n\nexport default function GameCanvas() {\n  const canvasRef = useRef<HTMLCanvasElement>(null);\n  // ゲーム状態は useRef で管理（re-render を避ける）\n  const gameStateRef = useRef<GameState>(createInitialState());\n  const keysRef = useRef<Set<string>>(new Set());\n  const frameRef = useRef<number>(0);\n\n  useEffect(() => {\n    const canvas = canvasRef.current;\n    const ctx = canvas?.getContext('2d');\n    if (!canvas || !ctx) return;\n\n    const gameLoop = (time: number) => {\n      // 1. 状態を更新\n      gameStateRef.current = updateGameState(\n        gameStateRef.current,\n        keysRef.current,\n        Date.now()\n      );\n\n      // 2. 画面を描画\n      render(ctx, gameStateRef.current, time);\n\n      // 3. 次のフレームを予約\n      frameRef.current = requestAnimationFrame(gameLoop);\n    };\n\n    frameRef.current = requestAnimationFrame(gameLoop);\n\n    return () => cancelAnimationFrame(frameRef.current);\n  }, []);\n\n  return <canvas ref={canvasRef} width={640} height={480} />;\n}",
+                        'code' => "\"use client\";\nimport { useRef, useEffect } from 'react';\nimport { createInitialState, updateGameState } from '@/game/engine';\nimport { render } from '@/game/renderer';\nimport type { GameState } from '@/game/types';\n\nexport default function GameCanvas() {\n  const canvasRef = useRef<HTMLCanvasElement>(null);\n  // ゲーム状態は useRef で管理（re-render を避ける）\n  const gameStateRef = useRef<GameState>(createInitialState());\n  const keysRef = useRef<Set<string>>(new Set());\n  const frameRef = useRef<number>(0);\n\n  useEffect(() => {\n    const canvas = canvasRef.current;\n    const ctx = canvas?.getContext('2d');\n    if (!canvas || !ctx) return;\n\n    const gameLoop = (time: number) => {\n      // 1. 状態を更新\n      gameStateRef.current = updateGameState(\n        gameStateRef.current,\n        keysRef.current,\n        Date.now()\n      );\n\n      // 2. 画面を描画\n      render(ctx, gameStateRef.current, time);\n\n      // 3. 次のフレームを予約\n      frameRef.current = requestAnimationFrame(gameLoop);\n    };\n\n    frameRef.current = requestAnimationFrame(gameLoop);\n\n    return () => cancelAnimationFrame(frameRef.current);\n  }, []);\n\n  return <canvas ref={canvasRef} width={640} height={480} />;\n}",
                         'language' => 'tsx',
                         'filename' => 'GameCanvas.tsx',
                         'highlights' => [9, 10, 11, 20, 21, 28, 31],
@@ -402,7 +402,7 @@ class PageController extends Controller
                         'type' => 'code',
                         'title' => '当たり判定（AABB衝突検出）',
                         'description' => '2つの矩形が重なっているかを判定するシンプルなアルゴリズムです。',
-                        'code' => "// AABB (Axis-Aligned Bounding Box) 衝突検出\n// 2つの矩形が重なっていれば true\nfunction isColliding(\n  a: { x: number; y: number; width: number; height: number },\n  b: { x: number; y: number; width: number; height: number }\n): boolean {\n  return (\n    a.x < b.x + b.width &&\n    a.x + a.width > b.x &&\n    a.y < b.y + b.height &&\n    a.y + a.height > b.y\n  );\n}\n\n// 使用例: 弾とインベーダーの当たり判定\nfor (const bullet of state.playerBullets) {\n  for (const invader of state.invaders) {\n    if (invader.alive && isColliding(bullet, invader)) {\n      invader.alive = false;  // インベーダーを撃破\n      score += (invader.type + 1) * 10;\n      // パーティクルエフェクトを生成\n    }\n  }\n}",
+                        'code' => "// AABB (Axis-Aligned Bounding Box) 衝突検出\n// 2つの矩形が重なっていれば true\nfunction isColliding(\n  a: { x: number; y: number; width: number; height: number },\n  b: { x: number; y: number; width: number; height: number }\n): boolean {\n  return (\n    a.x < b.x + b.width &&\n    a.x + a.width > b.x &&\n    a.y < b.y + b.height &&\n    a.y + a.height > b.y\n  );\n}\n\n// 使用例: 弾とインベーダーの当たり判定\n// イミュータブルに新しい配列を作成\nconst newInvaders = state.invaders.map(invader => {\n  if (!invader.alive) return invader;\n  const hit = state.playerBullets.some(\n    bullet => isColliding(bullet, invader)\n  );\n  if (hit) {\n    score += (invader.type + 1) * 10;\n    return { ...invader, alive: false };\n  }\n  return invader;\n});",
                         'language' => 'tsx',
                         'filename' => '当たり判定',
                         'highlights' => [7, 8, 9, 10, 11],
@@ -551,7 +551,7 @@ class PageController extends Controller
             ],
             2 => [
                 ['id' => 'q2-1', 'question' => '/about ページを作るために必要なファイルパスは？', 'options' => ['routes/about.php', 'pages/about.js', 'src/app/about/page.tsx', 'views/about.blade.php'], 'correctIndex' => 2, 'explanation' => 'App Routerではディレクトリ構造がそのままURLになります。src/app/about/page.tsx を作成すると /about でアクセスできます。'],
-                ['id' => 'q2-2', 'question' => '動的ルート（例: /game/:id）を作るフォルダ名の書き方は？', 'options' => ['{id}', ':id', '[id]', '$id'], 'correctIndex' => 2, 'explanation' => 'Next.jsの動的ルートは [id] のように角括弧で囲みます。Laravelの {id} とは書き方が異なります。'],
+                ['id' => 'q2-2', 'question' => '動的ルート（例: /game/:id）を作るフォルダ名の書き方は？', 'options' => ['{id}', ':id', '[id]', '$id'], 'correctIndex' => 2, 'explanation' => 'Next.jsの動的ルートは [id] のように角括弧で囲みます。Laravelの {id} とは書き方が異なります。Next.js 15ではparamsはPromiseになり、awaitして値を取り出します。'],
                 ['id' => 'q2-3', 'question' => 'LaravelのRoute::get()に相当するNext.jsの仕組みは？', 'options' => ['next.config.js のルート定義', 'ファイルベースルーティング', 'express.jsのルーター', 'APIルート定義ファイル'], 'correctIndex' => 1, 'explanation' => 'Next.js App Routerではルーティング定義ファイルは不要で、ファイル/フォルダの構造がそのままURLルーティングになります。'],
             ],
             3 => [

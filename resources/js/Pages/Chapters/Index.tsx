@@ -14,7 +14,7 @@ const chapters = [
     {
         number: 2,
         title: 'App Router とファイルベースルーティング',
-        description: 'Next.js 14+のApp Routerによるファイルベースルーティングを学びます。Laravelのweb.phpとの違い、動的ルーティング、ルートグループを解説します。',
+        description: 'Next.jsのApp Routerによるファイルベースルーティングを学びます。Laravelのweb.phpとの違い、動的ルーティング、ルートグループを解説します。',
         tags: ['App Router', 'page.tsx', '動的ルート', 'route groups'],
         difficulty: 'beginner' as const,
     },
