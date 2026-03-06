@@ -34,6 +34,9 @@ class PageController extends Controller
             ? ['number' => $number + 1, 'title' => $chapters[$number + 1]['title']]
             : null;
 
+        $quizzes = $this->getQuizzes();
+        $chapter['quiz'] = $quizzes[$number] ?? [];
+
         return Inertia::render('Chapters/Show', [
             'chapter' => $chapter,
         ]);
@@ -42,6 +45,11 @@ class PageController extends Controller
     public function demo()
     {
         return Inertia::render('Demo');
+    }
+
+    public function profile()
+    {
+        return Inertia::render('Profile');
     }
 
     public function about()
@@ -529,6 +537,52 @@ class PageController extends Controller
                         'content' => '<p>お疲れさまでした！ 全8チャプターを通じて、Next.jsのApp Routerを使ったWebアプリケーション開発の基礎を学びました。</p><p>インベーダーゲームという題材を通じて、以下の概念を体験的に理解できたはずです：</p><ul style="margin-top: 0.5rem; margin-left: 1.5rem; list-style: disc;"><li>ファイルベースルーティング</li><li>Server / Client Components</li><li>レイアウトシステム</li><li>React + Canvas の統合パターン</li><li>Vercel へのデプロイ</li></ul><p style="margin-top: 1rem;">ここで学んだ知識をベースに、APIルート、データフェッチ、認証など、さらに深いNext.jsの機能を探求してみてください。</p>',
                     ],
                 ],
+            ],
+        ];
+    }
+
+    private function getQuizzes(): array
+    {
+        return [
+            1 => [
+                ['id' => 'q1-1', 'question' => 'Next.jsプロジェクトを作成するコマンドは？', 'options' => ['composer create-project next/app', 'npx create-next-app@latest', 'npm init next-app', 'yarn create next'], 'correctIndex' => 1, 'explanation' => 'Next.jsでは npx create-next-app@latest を使ってプロジェクトを作成します。LaravelのComposerではなくnpmエコシステムを使います。'],
+                ['id' => 'q1-2', 'question' => 'Laravelの composer.json に相当するNode.jsのファイルは？', 'options' => ['node.json', 'yarn.lock', 'package.json', 'tsconfig.json'], 'correctIndex' => 2, 'explanation' => 'package.json はプロジェクトの依存関係やスクリプトを定義するファイルで、Laravelの composer.json に相当します。'],
+                ['id' => 'q1-3', 'question' => 'Next.jsの開発サーバーを起動するコマンドは？', 'options' => ['php artisan serve', 'npm run dev', 'next start', 'node server.js'], 'correctIndex' => 1, 'explanation' => 'npm run dev で開発サーバーが起動し、http://localhost:3000 でアクセスできます。Laravelの php artisan serve に相当します。'],
+            ],
+            2 => [
+                ['id' => 'q2-1', 'question' => '/about ページを作るために必要なファイルパスは？', 'options' => ['routes/about.php', 'pages/about.js', 'src/app/about/page.tsx', 'views/about.blade.php'], 'correctIndex' => 2, 'explanation' => 'App Routerではディレクトリ構造がそのままURLになります。src/app/about/page.tsx を作成すると /about でアクセスできます。'],
+                ['id' => 'q2-2', 'question' => '動的ルート（例: /game/:id）を作るフォルダ名の書き方は？', 'options' => ['{id}', ':id', '[id]', '$id'], 'correctIndex' => 2, 'explanation' => 'Next.jsの動的ルートは [id] のように角括弧で囲みます。Laravelの {id} とは書き方が異なります。'],
+                ['id' => 'q2-3', 'question' => 'LaravelのRoute::get()に相当するNext.jsの仕組みは？', 'options' => ['next.config.js のルート定義', 'ファイルベースルーティング', 'express.jsのルーター', 'APIルート定義ファイル'], 'correctIndex' => 1, 'explanation' => 'Next.js App Routerではルーティング定義ファイルは不要で、ファイル/フォルダの構造がそのままURLルーティングになります。'],
+            ],
+            3 => [
+                ['id' => 'q3-1', 'question' => 'Client Componentにするために必要な宣言は？', 'options' => ['export client', '"use client"', '@client', 'client: true'], 'correctIndex' => 1, 'explanation' => 'ファイルの先頭に "use client" と宣言することで、そのコンポーネントはClient Componentとして扱われます。'],
+                ['id' => 'q3-2', 'question' => 'Next.js App Routerでコンポーネントのデフォルトはどちら？', 'options' => ['Client Component', 'Server Component', 'Hybrid Component', 'Static Component'], 'correctIndex' => 1, 'explanation' => 'App RouterではすべてのコンポーネントはデフォルトでServer Componentです。"use client"を付けない限りサーバーで実行されます。'],
+                ['id' => 'q3-3', 'question' => 'layout.tsx の {children} に入るのは？', 'options' => ['props として渡されたデータ', '同階層以下の page.tsx の内容', 'グローバルなCSS', 'ヘッダーコンポーネント'], 'correctIndex' => 1, 'explanation' => 'layout.tsx の children には、同じディレクトリまたはサブディレクトリの page.tsx がレンダリングされて挿入されます。'],
+            ],
+            4 => [
+                ['id' => 'q4-1', 'question' => 'ReactでCanvas要素を参照するために使うフックは？', 'options' => ['useState', 'useEffect', 'useRef', 'useContext'], 'correctIndex' => 2, 'explanation' => 'useRef を使ってCanvas要素のDOM参照を取得します。useRef は再レンダリングを引き起こさずに値を保持できます。'],
+                ['id' => 'q4-2', 'question' => 'Canvas描画の初期化に適切なフックは？', 'options' => ['useState', 'useEffect', 'useMemo', 'useCallback'], 'correctIndex' => 1, 'explanation' => 'useEffect はコンポーネントのマウント後に副作用を実行するフックで、Canvas描画の初期化に最適です。'],
+                ['id' => 'q4-3', 'question' => 'Canvasに矩形を塗りつぶして描画するメソッドは？', 'options' => ['drawRect()', 'fillRect()', 'strokeRect()', 'paintRect()'], 'correctIndex' => 1, 'explanation' => 'fillRect(x, y, width, height) は指定した座標とサイズで塗りつぶされた矩形を描画します。'],
+            ],
+            5 => [
+                ['id' => 'q5-1', 'question' => '60FPSのゲームループを実現するためのブラウザAPIは？', 'options' => ['setInterval', 'setTimeout', 'requestAnimationFrame', 'setImmediate'], 'correctIndex' => 2, 'explanation' => 'requestAnimationFrame はブラウザのリフレッシュレートに同期してコールバックを実行するAPIで、滑らかなアニメーションを実現できます。'],
+                ['id' => 'q5-2', 'question' => 'ゲーム状態を毎フレームuseStateで更新しない理由は？', 'options' => ['useStateは非同期だから', 're-renderが毎秒60回発生するから', 'useStateはオブジェクトを保存できないから', 'useStateはCanvas内で使えないから'], 'correctIndex' => 1, 'explanation' => 'useStateを毎フレーム更新すると毎秒60回のre-renderが発生し、パフォーマンスが大幅に悪化します。代わりにuseRefで管理します。'],
+                ['id' => 'q5-3', 'question' => 'キーボードの同時押しを管理するのに適したデータ構造は？', 'options' => ['配列 (Array)', 'オブジェクト (Object)', 'Set', 'Map'], 'correctIndex' => 2, 'explanation' => 'Setはユニークな値のコレクションで、キーの押下状態をadd/deleteで管理するのに最適です。重複も防げます。'],
+            ],
+            6 => [
+                ['id' => 'q6-1', 'question' => '矩形同士の衝突検出アルゴリズムの名前は？', 'options' => ['SAT (Separating Axis Theorem)', 'AABB (Axis-Aligned Bounding Box)', 'BFS (Breadth-First Search)', 'Ray Casting'], 'correctIndex' => 1, 'explanation' => 'AABB（軸平行バウンディングボックス）は、2つの矩形が重なっているかを4つの条件で判定するシンプルなアルゴリズムです。'],
+                ['id' => 'q6-2', 'question' => 'イミュータブルな状態更新でよく使うJavaScriptの構文は？', 'options' => ['Object.assign()', 'スプレッド構文 (...)', 'JSON.parse(JSON.stringify())', 'structuredClone()'], 'correctIndex' => 1, 'explanation' => 'スプレッド構文 {...state, key: newValue} を使うと、元のオブジェクトを変更せずに新しいオブジェクトを作成できます。Reactの状態更新の基本パターンです。'],
+                ['id' => 'q6-3', 'question' => 'インベーダーが画面端に到達したときの動きは？', 'options' => ['消滅する', '反対側から出てくる', '一段下がって方向を反転する', '速度が上がる'], 'correctIndex' => 2, 'explanation' => 'クラシックなインベーダーゲームでは、隊列が画面端に到達すると一段下がって移動方向を反転します。これによりプレイヤーに近づいていきます。'],
+            ],
+            7 => [
+                ['id' => 'q7-1', 'question' => 'Canvasのゲーム状態をReact UIに反映する際のパフォーマンス対策は？', 'options' => ['useMemoで計算をキャッシュ', 'React.memoでコンポーネントをメモ化', 'スロットリングで更新頻度を制限', 'Web Workerで別スレッド処理'], 'correctIndex' => 2, 'explanation' => 'ゲームは60FPSで動作しますが、React UIの更新は100ms間隔程度にスロットリングすることで、不要なre-renderを防ぎます。'],
+                ['id' => 'q7-2', 'question' => 'パーティクルのフェードアウトに使うCanvasのプロパティは？', 'options' => ['ctx.opacity', 'ctx.globalAlpha', 'ctx.transparency', 'ctx.fadeLevel'], 'correctIndex' => 1, 'explanation' => 'ctx.globalAlpha は描画の透明度を0〜1で設定するプロパティです。パーティクルのライフに連動させてフェードアウトを表現します。'],
+                ['id' => 'q7-3', 'question' => 'ゲーム状態をuseRefで管理する最大の理由は？', 'options' => ['DOMの参照が必要だから', 're-renderを避けてパフォーマンスを維持するため', 'useStateよりメモリ効率が良いから', 'TypeScriptの型推論が効きやすいから'], 'correctIndex' => 1, 'explanation' => 'useRefは値が変更されてもre-renderを発生させません。60FPSで状態更新するゲームでは、この特性が不可欠です。'],
+            ],
+            8 => [
+                ['id' => 'q8-1', 'question' => 'Next.jsの本番ビルドを実行するコマンドは？', 'options' => ['npm run build', 'next compile', 'npm run production', 'next export'], 'correctIndex' => 0, 'explanation' => 'npm run build（= next build）で本番用の最適化されたビルドが生成されます。.next/ ディレクトリにビルド成果物が出力されます。'],
+                ['id' => 'q8-2', 'question' => 'Next.jsアプリケーションの推奨デプロイ先は？', 'options' => ['AWS EC2', 'Heroku', 'Vercel', 'Firebase'], 'correctIndex' => 2, 'explanation' => 'VercelはNext.jsの開発元が提供するホスティングサービスで、Git連携による自動デプロイ、エッジ関数など最適化された環境を提供します。'],
+                ['id' => 'q8-3', 'question' => 'クライアントサイドで使える環境変数のプレフィックスは？', 'options' => ['PUBLIC_', 'CLIENT_', 'NEXT_PUBLIC_', 'BROWSER_'], 'correctIndex' => 2, 'explanation' => 'NEXT_PUBLIC_ プレフィックスを付けた環境変数はクライアントサイドのJavaScriptバンドルに含まれ、ブラウザからアクセスできます。'],
             ],
         ];
     }

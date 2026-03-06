@@ -1,5 +1,9 @@
 import { Link } from '@inertiajs/react';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
+import XpBar from '@/Components/gamification/XpBar';
+import BadgeToast from '@/Components/gamification/BadgeToast';
+import LevelUpModal from '@/Components/gamification/LevelUpModal';
+import { useGamification } from '@/contexts/GamificationContext';
 
 interface Props {
     children: ReactNode;
@@ -7,6 +11,11 @@ interface Props {
 
 export default function MainLayout({ children }: Props) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { trackPageVisit } = useGamification();
+
+    useEffect(() => {
+        trackPageVisit(window.location.pathname);
+    }, [trackPageVisit]);
 
     return (
         <div className="min-h-screen bg-dark text-white">
@@ -22,47 +31,33 @@ export default function MainLayout({ children }: Props) {
                         </Link>
 
                         {/* Desktop nav */}
-                        <nav className="hidden items-center gap-8 md:flex">
-                            <Link
-                                href="/"
-                                className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
-                            >
-                                ホーム
-                            </Link>
-                            <Link
-                                href="/chapters"
-                                className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
-                            >
-                                チャプター
-                            </Link>
-                            <Link
-                                href="/demo"
-                                className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
-                            >
-                                デモ
-                            </Link>
-                            <Link
-                                href="/about"
-                                className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
-                            >
-                                About
-                            </Link>
+                        <nav className="hidden items-center gap-6 md:flex">
+                            <Link href="/" className="text-sm font-medium text-gray-300 transition-colors hover:text-white">ホーム</Link>
+                            <Link href="/chapters" className="text-sm font-medium text-gray-300 transition-colors hover:text-white">チャプター</Link>
+                            <Link href="/demo" className="text-sm font-medium text-gray-300 transition-colors hover:text-white">デモ</Link>
+                            <Link href="/profile" className="text-sm font-medium text-gray-300 transition-colors hover:text-white">実績</Link>
+                            <Link href="/about" className="text-sm font-medium text-gray-300 transition-colors hover:text-white">About</Link>
+                            <div className="border-l border-dark-lighter pl-4">
+                                <XpBar />
+                            </div>
                         </nav>
 
-                        {/* Mobile menu button */}
-                        <button
-                            className="md:hidden"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            aria-label="メニュー"
-                        >
-                            <svg className="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                {mobileMenuOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                )}
-                            </svg>
-                        </button>
+                        {/* Mobile: XP bar + menu button */}
+                        <div className="flex items-center gap-3 md:hidden">
+                            <XpBar />
+                            <button
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                aria-label="メニュー"
+                            >
+                                <svg className="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    {mobileMenuOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Mobile menu */}
@@ -72,6 +67,7 @@ export default function MainLayout({ children }: Props) {
                                 <Link href="/" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-300 hover:bg-dark-lighter hover:text-white">ホーム</Link>
                                 <Link href="/chapters" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-300 hover:bg-dark-lighter hover:text-white">チャプター</Link>
                                 <Link href="/demo" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-300 hover:bg-dark-lighter hover:text-white">デモ</Link>
+                                <Link href="/profile" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-300 hover:bg-dark-lighter hover:text-white">実績</Link>
                                 <Link href="/about" className="rounded-lg px-3 py-2 text-sm font-medium text-gray-300 hover:bg-dark-lighter hover:text-white">About</Link>
                             </div>
                         </nav>
@@ -101,6 +97,7 @@ export default function MainLayout({ children }: Props) {
                             <ul className="space-y-2 text-sm text-gray-400">
                                 <li><Link href="/chapters" className="hover:text-white">チャプター一覧</Link></li>
                                 <li><Link href="/demo" className="hover:text-white">ゲームデモ</Link></li>
+                                <li><Link href="/profile" className="hover:text-white">実績</Link></li>
                                 <li><Link href="/about" className="hover:text-white">このサイトについて</Link></li>
                             </ul>
                         </div>
@@ -118,6 +115,10 @@ export default function MainLayout({ children }: Props) {
                     </div>
                 </div>
             </footer>
+
+            {/* Gamification overlays */}
+            <BadgeToast />
+            <LevelUpModal />
         </div>
     );
 }

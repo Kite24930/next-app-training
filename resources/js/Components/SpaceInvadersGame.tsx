@@ -8,16 +8,26 @@ import {
     CANVAS_HEIGHT,
     type GameState,
 } from '@/game/engine';
+import { useGamification } from '@/contexts/GamificationContext';
 
 export default function SpaceInvadersGame() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const gameStateRef = useRef<GameState>(createInitialState());
     const keysRef = useRef<Set<string>>(new Set());
     const animFrameRef = useRef<number>(0);
+    const reportedRef = useRef(false);
     const [displayScore, setDisplayScore] = useState(0);
     const [displayLives, setDisplayLives] = useState(3);
     const [displayLevel, setDisplayLevel] = useState(1);
     const [gameStatus, setGameStatus] = useState<GameState['status']>('playing');
+    const { updateGameScore, state: gamificationState } = useGamification();
+
+    const reportScore = useCallback((gs: GameState) => {
+        if (reportedRef.current) return;
+        reportedRef.current = true;
+        const noDamage = gs.lives === 3 && gs.level >= 2;
+        updateGameScore(gs.score, gs.level, noDamage);
+    }, [updateGameScore]);
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         keysRef.current.add(e.key);
@@ -30,10 +40,14 @@ export default function SpaceInvadersGame() {
         if (e.key === 'Enter') {
             const state = gameStateRef.current;
             if (state.status === 'gameover') {
+                reportScore(state);
                 gameStateRef.current = createInitialState();
+                reportedRef.current = false;
             } else if (state.status === 'win') {
+                reportScore(state);
                 gameStateRef.current = createInitialState(state.level + 1);
                 gameStateRef.current.score = state.score;
+                reportedRef.current = false;
             }
         }
 
@@ -45,7 +59,7 @@ export default function SpaceInvadersGame() {
                 gameStateRef.current = { ...state, status: 'playing' };
             }
         }
-    }, []);
+    }, [reportScore]);
 
     const handleKeyUp = useCallback((e: KeyboardEvent) => {
         keysRef.current.delete(e.key);
@@ -65,15 +79,22 @@ export default function SpaceInvadersGame() {
 
         const gameLoop = (time: number) => {
             const now = Date.now();
+            const prevStatus = gameStateRef.current.status;
             gameStateRef.current = updateGameState(gameStateRef.current, keysRef.current, now);
             render(ctx, gameStateRef.current, time);
 
+            // Auto-report on game over or win
+            const gs = gameStateRef.current;
+            if ((gs.status === 'gameover' || gs.status === 'win') && prevStatus === 'playing') {
+                reportScore(gs);
+            }
+
             // Throttle React state updates to every ~100ms
             if (time - lastUIUpdate > 100) {
-                setDisplayScore(gameStateRef.current.score);
-                setDisplayLives(gameStateRef.current.lives);
-                setDisplayLevel(gameStateRef.current.level);
-                setGameStatus(gameStateRef.current.status);
+                setDisplayScore(gs.score);
+                setDisplayLives(gs.lives);
+                setDisplayLevel(gs.level);
+                setGameStatus(gs.status);
                 lastUIUpdate = time;
             }
 
@@ -87,7 +108,7 @@ export default function SpaceInvadersGame() {
             window.removeEventListener('keydown', handleKeyDown);
             window.removeEventListener('keyup', handleKeyUp);
         };
-    }, [handleKeyDown, handleKeyUp]);
+    }, [handleKeyDown, handleKeyUp, reportScore]);
 
     return (
         <div className="flex flex-col items-center gap-6">
@@ -146,6 +167,11 @@ export default function SpaceInvadersGame() {
                 <div className="text-center">
                     <div className="text-xs text-gray-500">LIVES</div>
                     <div className="font-mono text-lg font-bold text-red-400">{'♥'.repeat(Math.max(0, displayLives))}</div>
+                </div>
+                <div className="border-l border-dark-lighter" />
+                <div className="text-center">
+                    <div className="text-xs text-gray-500">HIGH SCORE</div>
+                    <div className="font-mono text-lg font-bold text-yellow-400">{String(gamificationState.gameHighScore).padStart(6, '0')}</div>
                 </div>
             </div>
         </div>

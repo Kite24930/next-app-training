@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useGamification } from '@/contexts/GamificationContext';
 
 interface Props {
     code: string;
@@ -9,10 +10,12 @@ interface Props {
 
 export default function CodeBlock({ code, language = 'tsx', filename, highlights = [] }: Props) {
     const [copied, setCopied] = useState(false);
+    const { trackCodeCopy } = useGamification();
 
     const handleCopy = async () => {
         await navigator.clipboard.writeText(code);
         setCopied(true);
+        trackCodeCopy();
         setTimeout(() => setCopied(false), 2000);
     };
 

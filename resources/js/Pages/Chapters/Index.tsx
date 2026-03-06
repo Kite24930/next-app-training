@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import ChapterCard from '@/Components/ChapterCard';
+import { useGamification } from '@/contexts/GamificationContext';
 
 const chapters = [
     {
@@ -62,6 +63,10 @@ const chapters = [
 ];
 
 export default function ChaptersIndex() {
+    const { state } = useGamification();
+    const completedCount = state.completedChapters.length;
+    const progressPercent = Math.round((completedCount / 8) * 100);
+
     return (
         <MainLayout>
             <Head title="チャプター一覧" />
@@ -80,10 +85,13 @@ export default function ChaptersIndex() {
                 <div className="mb-10 rounded-lg border border-dark-lighter bg-dark-light p-4">
                     <div className="mb-2 flex items-center justify-between text-sm">
                         <span className="text-gray-400">学習進捗</span>
-                        <span className="text-gray-500">0 / 8 チャプター完了</span>
+                        <span className="text-gray-500">{completedCount} / 8 チャプター完了</span>
                     </div>
                     <div className="h-2 rounded-full bg-dark">
-                        <div className="h-2 w-0 rounded-full bg-gradient-to-r from-primary to-accent transition-all" />
+                        <div
+                            className="h-2 rounded-full bg-gradient-to-r from-primary to-accent transition-all duration-500"
+                            style={{ width: `${progressPercent}%` }}
+                        />
                     </div>
                 </div>
 

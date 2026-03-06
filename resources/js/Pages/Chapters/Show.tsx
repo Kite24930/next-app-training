@@ -2,6 +2,8 @@ import { Head, Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import CodeBlock from '@/Components/CodeBlock';
 import ComparisonBlock from '@/Components/ComparisonBlock';
+import QuizSection, { type QuizQuestionData } from '@/Components/gamification/QuizSection';
+import ChapterComplete from '@/Components/gamification/ChapterComplete';
 
 interface Section {
     type: 'text' | 'code' | 'comparison' | 'exercise' | 'tip';
@@ -23,6 +25,7 @@ interface ChapterData {
     description: string;
     objectives: string[];
     sections: Section[];
+    quiz?: QuizQuestionData[];
     prevChapter: { number: number; title: string } | null;
     nextChapter: { number: number; title: string } | null;
 }
@@ -155,8 +158,16 @@ export default function ChapterShow({ chapter }: Props) {
                     })}
                 </article>
 
+                {/* Quiz section */}
+                {chapter.quiz && chapter.quiz.length > 0 && (
+                    <QuizSection chapterId={chapter.number} questions={chapter.quiz} />
+                )}
+
+                {/* Chapter complete button */}
+                <ChapterComplete chapterId={chapter.number} />
+
                 {/* Navigation */}
-                <nav className="mt-16 flex items-center justify-between border-t border-dark-lighter pt-8">
+                <nav className="mt-8 flex items-center justify-between border-t border-dark-lighter pt-8">
                     {chapter.prevChapter ? (
                         <Link
                             href={`/chapters/${chapter.prevChapter.number}`}

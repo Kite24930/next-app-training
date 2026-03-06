@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
+import ProfileSection from '@/Components/gamification/ProfileSection';
 
 export default function Home() {
     const features = [
@@ -84,6 +85,14 @@ export default function Home() {
                             </Link>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            {/* Progress Section */}
+            <section className="border-t border-dark-lighter bg-dark-light/30">
+                <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+                    <h2 className="mb-4 text-center text-lg font-bold text-white">あなたの学習進捗</h2>
+                    <ProfileSection />
                 </div>
             </section>
 
