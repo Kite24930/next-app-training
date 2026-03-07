@@ -1,59 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Next.js Invaders - 学習サイト
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+スペースインベーダーの開発を通じて **Next.js 15** を学ぶインタラクティブ学習プラットフォームです。
 
-## About Laravel
+## 概要
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Laravel + Inertia.js（React）で構築された学習サイトと、学習コースの完成版となる Next.js アプリケーションの 2 つで構成されています。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 学習サイト（Laravel）
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+全 8 チャプターの学習コンテンツ、クイズ、実際に遊べるデモゲームを提供します。
 
-## Learning Laravel
+| チャプター | 内容 |
+|-----------|------|
+| 1. 環境構築 | Next.js 15 プロジェクトの作成・ディレクトリ構成 |
+| 2. App Router | レイアウト・ページ・動的ルーティング |
+| 3. Client Components | useRef・useEffect・Canvas セットアップ |
+| 4. ゲーム描画 | Canvas API でインベーダーとプレイヤーを描画 |
+| 5. キーボード入力 | イベントリスナーと Set によるキー管理 |
+| 6. 衝突検出 | AABB 衝突判定・スコア・ライフ管理 |
+| 7. パフォーマンス最適化 | useRef でゲーム状態管理・UI スロットリング・パーティクル |
+| 8. デプロイ | メタデータ・generateStaticParams・Vercel デプロイ |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 完成版アプリ（`space-invaders/`）
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+学習コースを通じて完成する Next.js アプリの完成版です。
 
-## Laravel Sponsors
+```
+space-invaders/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx           # ルートレイアウト + メタデータ
+│   │   ├── page.tsx             # ホーム画面（レベル選択）
+│   │   └── level/[id]/
+│   │       ├── page.tsx         # Server Component（動的ルート）
+│   │       └── LevelClient.tsx  # Client Component
+│   ├── components/
+│   │   └── SpaceInvadersGame.tsx # ゲーム本体
+│   └── game/
+│       └── engine.ts            # ゲームエンジン
+├── package.json
+├── tsconfig.json
+└── next.config.ts
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## セットアップ
 
-### Premium Partners
+### 学習サイト（Laravel）
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+# 依存パッケージのインストール
+composer install
+npm install
 
-## Contributing
+# 環境設定
+cp .env.example .env
+php artisan key:generate
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# データベースのマイグレーション
+php artisan migrate
 
-## Code of Conduct
+# 開発サーバーの起動
+php artisan serve
+npm run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 完成版アプリ（Next.js）
 
-## Security Vulnerabilities
+```bash
+cd space-invaders
+npm install
+npm run dev    # 開発サーバー: http://localhost:3000
+npm run build  # プロダクションビルド
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 技術スタック
 
-## License
+### 学習サイト
+- **Backend**: Laravel 12 / PHP 8.2+
+- **Frontend**: React 19 / TypeScript / Inertia.js
+- **Styling**: Tailwind CSS v4
+- **Game Engine**: Canvas API / TypeScript
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 完成版アプリ
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **UI**: React 19
+- **Styling**: Tailwind CSS v4
+- **Rendering**: Canvas API
+
+## ゲーム操作
+
+| キー | 操作 |
+|------|------|
+| ← → / A D | 移動 |
+| Space / ↑ | 射撃 |
+| Enter | リスタート / 次のレベル |
+
+## ライセンス
+
+MIT
